@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tus Notas - Kanban</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">To-Do List</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light" href="/edit">Editar Elementos</a>
+                    </li>
+                    {% if session.get('is_admin', False) %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light me-2" href="/admin/users">Editar Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light me-2" href="/admin_dashboard">Ir al Dashboard</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light" href="/logout">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Tus Notas - Kanban</h1>
+
+        <div class="row">
+            <!-- To Do -->
+            <div class="col-md-4">
+                <div class="kanban-column bg-light-blue" data-status="To Do">
+                    <h5 class="text-center">To Do</h5>
+                    {% for project in projects if project.status == 'To Do' %}
+                    <div class="kanban-item" draggable="true" data-id="{{ project.id }}">
+                        <strong>{{ project.name }}</strong>
+                        <p>{{ project.description or 'Sin descripción' }}</p>
+                        <p><small>Inicio: {{ project.start_date }}</small></p>
+                        <p><small>Cierre: {{ project.end_date }}</small></p>
+                        <p><small>Dificultad: {{ project.difficulty }}</small></p>
+                        {% if session.get('is_admin') %}
+                        <p><small>Creador: {{ project.creator_name }}</small></p>
+                        {% endif %}
+                        <h6>Tareas:</h6>
+                        <ul>
+                            {% for task in tasks if task.project_id == project.id %}
+                            <li>
+                                <strong>{{ task.title }}</strong> - ${{ task.cost }}
+                                <ul>
+                                    <li>{{ task.description }}</li>
+                                </ul>
+                                <h6>Comentarios:</h6>
+                                <ul>
+                                    {% for comment in comments if comment.task_id == task.id %}
+                                    <li>{{ comment.content }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Haciendo -->
+            <div class="col-md-4">
+                <div class="kanban-column bg-light-yellow" data-status="Haciendo">
+                    <h5 class="text-center">Haciendo</h5>
+                    {% for project in projects if project.status == 'Haciendo' %}
+                    <div class="kanban-item" draggable="true" data-id="{{ project.id }}">
+                        <strong>{{ project.name }}</strong>
+                        <p>{{ project.description or 'Sin descripción' }}</p>
+                        <p><small>Inicio: {{ project.start_date }}</small></p>
+                        <p><small>Cierre: {{ project.end_date }}</small></p>
+                        <p><small>Dificultad: {{ project.difficulty }}</small></p>
+                        {% if session.get('is_admin') %}
+                <p><small>Creador: {{ project.creator_name }}</small></p>
+                {% endif %}
+                        <h6>Tareas:</h6>
+                        <ul>
+                            {% for task in tasks if task.project_id == project.id %}
+                            <li>
+                                <strong>{{ task.title }}</strong> - ${{ task.cost }}
+                                <ul>
+                                    <li>{{ task.description }}</li>
+                                </ul>
+                                <h6>Comentarios:</h6>
+                                <ul>
+                                    {% for comment in comments if comment.task_id == task.id %}
+                                    <li>{{ comment.content }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Terminado -->
+            <div class="col-md-4">
+                <div class="kanban-column bg-light-green" data-status="Terminado">
+                    <h5 class="text-center">Terminado</h5>
+                    {% for project in projects if project.status == 'Terminado' %}
+                    <div class="kanban-item" draggable="true" data-id="{{ project.id }}">
+                        <strong>{{ project.name }}</strong>
+                        <p>{{ project.description or 'Sin descripción' }}</p>
+                        <p><small>Inicio: {{ project.start_date }}</small></p>
+                        <p><small>Cierre: {{ project.end_date }}</small></p>
+                        <p><small>Dificultad: {{ project.difficulty }}</small></p>
+                        {% if session.get('is_admin') %}
+                <p><small>Creador: {{ project.creator_name }}</small></p>
+                {% endif %}
+                        <h6>Tareas:</h6>
+                        <ul>
+                            {% for task in tasks if task.project_id == project.id %}
+                            <li>
+                                <strong>{{ task.title }}</strong> - ${{ task.cost }}
+                                <ul>
+                                    <li>{{ task.description }}</li>
+                                </ul>
+                                <h6>Comentarios:</h6>
+                                <ul>
+                                    {% for comment in comments if comment.task_id == task.id %}
+                                    <li>{{ comment.content }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const items = document.querySelectorAll('.kanban-item');
+        const columns = document.querySelectorAll('.kanban-column');
+
+        items.forEach(item => {
+            item.addEventListener('dragstart', event => {
+                event.dataTransfer.setData('text/plain', event.target.dataset.id);
+                event.dataTransfer.effectAllowed = 'move';
+            });
+        });
+
+        columns.forEach(column => {
+            column.addEventListener('dragover', event => {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+            });
+
+            column.addEventListener('drop', event => {
+                event.preventDefault();
+                const projectId = event.dataTransfer.getData('text/plain');
+                const projectElement = document.querySelector(`[data-id="${projectId}"]`);
+                const newStatus = column.dataset.status;
+
+                if (projectElement) {
+                    column.appendChild(projectElement);
+
+                    fetch(`/update_project_status`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ project_id: projectId, status: newStatus })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Estado del proyecto actualizado con éxito');
+                        } else {
+                            alert('Error al actualizar el estado del proyecto.');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

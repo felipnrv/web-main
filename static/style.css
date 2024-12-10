@@ -1,0 +1,48 @@
+/* Estilo general para las columnas Kanban */
+.kanban-column {
+    min-height: 600px;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+}
+
+/* Colores suaves para cada columna */
+.bg-light-blue {
+    background-color: #33729e; /* Azul claro */
+}
+
+.bg-light-yellow {
+    background-color: #dad169; /* Amarillo claro */
+}
+
+.bg-light-green {
+    background-color: #68b76e; /* Verde claro */
+}
+
+/* Estilo para los títulos de las columnas */
+.kanban-column h5 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #424242; /* Gris oscuro */
+}
+
+/* Estilo para los elementos Kanban */
+.kanban-item {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    cursor: grab;
+}
+
+.kanban-item:hover {
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
+}
+.chart-container {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}

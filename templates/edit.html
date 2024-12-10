@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Elementos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Editar Elementos</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-light" href="/notes">Ir a Notas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light" href="/logout">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Editar Elementos</h1>
+
+        <div class="row mt-5">
+            <!-- Formulario para Proyectos -->
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header">Proyectos</div>
+                    <div class="card-body">
+                        <form action="/project" method="POST" id="projectForm" class="mb-4">
+                            <input type="hidden" name="id" id="projectId" value="{{ item.id if item_type == 'project' else '' }}">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="name" id="projectName"
+                                    placeholder="Nombre del Proyecto" required
+                                    value="{{ item.name if item_type == 'project' else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" name="description" id="projectDescription"
+                                    placeholder="Descripción">{{ item.description if item_type == 'project' else '' }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="start_date">Fecha de Inicio</label>
+                                <input type="date" class="form-control" name="start_date" id="startDate"
+                                    value="{{ item.start_date if item_type == 'project' and item.start_date else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="end_date">Fecha de Cierre</label>
+                                <input type="date" class="form-control" name="end_date" id="endDate"
+                                    value="{{ item.end_date if item_type == 'project' and item.end_date else '' }}">
+                            </div>
+                            
+                            
+                            <div class="mb-3">
+                                <label for="difficulty" class="form-label">Dificultad</label>
+                                <select class="form-select" name="difficulty" id="difficulty" required>
+                                    <option value="Fácil" {% if item.difficulty == 'Fácil' %}selected{% endif %}>Fácil</option>
+                                    <option value="Media" {% if item.difficulty == 'Media' %}selected{% endif %}>Media</option>
+                                    <option value="Difícil" {% if item.difficulty == 'Difícil' %}selected{% endif %}>Difícil</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">{{ 'Guardar Cambios' if item_type == 'project' and item else 'Guardar Proyecto' }}</button>
+                        </form>
+                        <!-- Lista de Proyectos -->
+                        <ul class="list-group">
+                            {% for project in projects %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ project.name }}</strong><br>
+                                    {{ project.description or 'Sin descripción' }}
+                                </div>
+                                <div>
+                                    <a href="{{ url_for('delete_project', id=project.id) }}" class="btn btn-sm btn-outline-danger">❌</a>
+                                    <a href="{{ url_for('edit_notes', type='project', id=project.id) }}" class="btn btn-sm btn-outline-warning">✏️</a>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario para Tareas -->
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header">Tareas</div>
+                    <div class="card-body">
+                        <form action="/task" method="POST" id="taskForm" class="mb-4">
+                            <input type="hidden" name="id" id="taskId" value="{{ item.id if item_type == 'task' else '' }}">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="title" id="taskTitle"
+                                    placeholder="Título de la Tarea" required
+                                    value="{{ item.title if item_type == 'task' else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" name="description" id="taskDescription"
+                                    placeholder="Descripción">{{ item.description if item_type == 'task' else '' }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cost" class="form-label">Costo</label>
+                                <input type="number" step="0.01"  class="form-control" name="cost" id="taskCost"
+                                    value="{{ item.cost if item_type == 'task' else '0.00' }}">
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-control" name="project_id" id="taskProject" required>
+                                    <option value="" disabled {% if not item or item_type != 'task' %}selected{% endif %}>Seleccionar Proyecto</option>
+                                    {% for project in projects %}
+                                    <option value="{{ project.id }}"
+                                        {% if item and item_type == 'task' and item.project_id == project.id %}selected{% endif %}>{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">{{ 'Guardar Cambios' if item_type == 'task' and item else 'Guardar Tarea' }}</button>
+                        </form>
+                        <!-- Lista de Tareas -->
+                        <ul class="list-group">
+                            {% for task in tasks %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ task.title }}</strong><br>
+                                    {{ task.description or 'Sin descripción' }}<br>
+                                    <small>Costo: ${{ task.cost }}</small>
+                                </div>
+                                <div>
+                                    <a href="{{ url_for('delete_task', id=task.id) }}" class="btn btn-sm btn-outline-danger">❌</a>
+                                    <a href="{{ url_for('edit_notes', type='task', id=task.id) }}" class="btn btn-sm btn-outline-warning">✏️</a>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario para Comentarios -->
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header">Comentarios</div>
+                    <div class="card-body">
+                        <form action="/comment" method="POST" class="mb-4">
+                            <input type="hidden" name="id" id="commentId" value="{{ item.id if item_type == 'comment' else '' }}">
+                            <textarea name="content" placeholder="Comentario" class="form-control mb-2"
+                                required>{{ item.content if item_type == 'comment' else '' }}</textarea>
+                            <div class="mb-3">
+                                <select name="task_id" class="form-select mb-2" required>
+                                    <option value="" disabled {% if not item or item_type != 'comment' %}selected{% endif %}>Seleccionar Tarea</option>
+                                    {% for task in tasks %}
+                                    <option value="{{ task.id }}"
+                                        {% if item and item_type == 'comment' and item.task_id == task.id %}selected{% endif %}>{{ task.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">{{ 'Guardar Cambios' if item_type == 'comment' and item else 'Guardar Comentario' }}</button>
+                        </form>
+                        <!-- Lista de Comentarios -->
+                        <ul class="list-group">
+                            {% for comment in comments %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    {{ comment.content }}<br>
+                                    <small>Tarea: {{ comment.task_id }}</small>
+                                </div>
+                                <div>
+                                    <a href="{{ url_for('delete_comment', id=comment.id) }}" class="btn btn-sm btn-outline-danger">❌</a>
+                                    <a href="{{ url_for('edit_notes', type='comment', id=comment.id) }}" class="btn btn-sm btn-outline-warning">✏️</a>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const startDateInput = document.getElementById("startDate");
+            const endDateInput = document.getElementById("endDate");
+    
+            // Si no hay valor definido, asigna la fecha actual
+            if (!startDateInput.value) {
+                startDateInput.value = new Date().toISOString().split('T')[0];
+            }
+            if (!endDateInput.value) {
+                endDateInput.value = new Date().toISOString().split('T')[0];
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

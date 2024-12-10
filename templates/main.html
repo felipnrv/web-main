@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='post_it.png') }}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            width: 400px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+        .btn-custom {
+            border-radius: 25px;
+        }
+    </style>
+  
+</head>
+<body>
+    <div class="card text-center">
+        <h2 class="mb-4">Bienvenido a To-Do List</h2>
+        <p>Organiza tus tareas y proyectos fácilmente.</p>
+        <div class="d-flex justify-content-around mt-4">
+            <a href="/login" class="btn btn-primary btn-custom px-4">Iniciar Sesión</a>
+            <a href="/register" class="btn btn-secondary btn-custom px-4">Registrar</a>
+        </div>
+    </div>
+</body>
+</html>
